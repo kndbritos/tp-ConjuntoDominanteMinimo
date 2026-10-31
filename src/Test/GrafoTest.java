@@ -32,6 +32,17 @@ public class GrafoTest {
 		grafo.agregarArista(0, 1);
 		assertTrue(grafo.existeArista(0, 1));
 	}
+	@Test(expected = IllegalArgumentException.class)
+	public void agregarAristaNegativo() {
+		Grafo grafo =new Grafo(2);
+		grafo.agregarArista(0, -1);
+	}
+	@Test(expected = IllegalArgumentException.class)
+	public void agregarAristaIgual() {
+		Grafo grafo =new Grafo(2);
+		grafo.agregarArista(0, 0);
+	}
+	
 	@Test 
 	public void EliminarArista() {
 		Grafo grafo =new Grafo(2);
@@ -49,6 +60,12 @@ public class GrafoTest {
 		Grafo grafo =new Grafo(2);
 		grafo.agregarArista(0, 1);
 		assertEquals(grafo.gradoDeVertice(0),1);
+	}
+	@Test 
+	public void Vecinos() {
+		Grafo grafo =new Grafo(2);
+		grafo.agregarArista(0, 1);
+		assertEquals(grafo.vecinos(0).size(),1);
 	}
 	
 
