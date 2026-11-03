@@ -62,10 +62,6 @@ public class Grafo {
 	public int tamanoDeGrafo() {
 	    return vecinos.size();
 	}
-	public int gradoDeVertice(int vertice) {
-	    verificarVertice(vertice);
-	    return vecinos.get(vertice).size();
-	}
 	private void verificarVertice(int vertice) {
 	    if (vertice < 0 || vertice >= vecinos.size()) {
 	        throw new IllegalArgumentException("El vértice " + vertice + " no existe");
