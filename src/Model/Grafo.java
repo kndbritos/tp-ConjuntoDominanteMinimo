@@ -6,6 +6,9 @@ import java.util.HashSet;
 
 public class Grafo {
 	private ArrayList<HashSet<Integer>> vecinos;
+	
+	private ArrayList<ObservadorGrafo> observadores = new ArrayList<>();
+	
 	public Grafo(int n){
 		if (n < 0) {
 	        throw new IllegalArgumentException("La cantidad no puede ser negativa");
@@ -21,21 +24,34 @@ public class Grafo {
 	}
 	public int agregarVertice() {
 	    vecinos.add(new HashSet<Integer>());
+	    
+	    notificarObservadores();
+	    
 	    return vecinos.size() - 1;
 	}
 	public void agregarArista(int verticeA, int verticeB){
 		verificarVertice(verticeA);
 		verificarVertice(verticeB);
 		verificarDistintos(verticeA, verticeB);
-		vecinos.get(verticeA).add(verticeB);
+		
+		boolean agregada = vecinos.get(verticeA).add(verticeB);
 		vecinos.get(verticeB).add(verticeA);
+		
+		if(agregada) {
+			notificarObservadores();
+		}
 	}
-	public void eliminarArista(int verticeA, int verticeB){
-		verificarVertice(verticeA);
-		verificarVertice(verticeB);
-		verificarDistintos(verticeA,verticeB);
-		vecinos.get(verticeA).remove(verticeB);
-		vecinos.get(verticeB).remove(verticeA);
+	public void eliminarArista(int verticeA, int verticeB) {
+	    verificarVertice(verticeA);
+	    verificarVertice(verticeB);
+	    verificarDistintos(verticeA, verticeB);
+
+	    boolean eliminada = vecinos.get(verticeA).remove(verticeB);
+	    vecinos.get(verticeB).remove(verticeA);
+
+	    if (eliminada) {
+	        notificarObservadores();
+	    }
 	}
 	public boolean existeArista(int verticeA, int verticeB){
 		verificarVertice(verticeA);
@@ -62,6 +78,26 @@ public class Grafo {
 	}
 	public HashSet<Integer> vecinos(int vertice) {
 	    verificarVertice(vertice);
-	    return vecinos.get(vertice);
+	    return new HashSet<>(vecinos.get(vertice));
+	}
+	
+	public void agregarObservador(ObservadorGrafo observador) {
+	    if (observador == null) {
+	        throw new IllegalArgumentException("El observador no puede ser nulo");
+	    }
+
+	    if (!observadores.contains(observador)) {
+	        observadores.add(observador);
+	    }
+	}
+
+	public void eliminarObservador(ObservadorGrafo observador) {
+	    observadores.remove(observador);
+	}
+
+	private void notificarObservadores() {
+	    for (ObservadorGrafo observador : observadores) {
+	        observador.grafoActualizado();
+	    }
 	}
 }

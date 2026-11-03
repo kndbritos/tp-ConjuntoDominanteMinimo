@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<grafo cantidad_vertices="5">
+
+    <arista origen="0" destino="1"/>
+    <arista origen="1" destino="2"/>
+    <arista origen="1" destino="3"/>
+    <arista origen="3" destino="4"/>
+
+</grafo>
