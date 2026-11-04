@@ -29,6 +29,7 @@ public class SolverBacktracking {
 		if (Thread.currentThread().isInterrupted()) {
 		    return;
 		}
+		
 		if(alcanzoTamanoMinimo(conjuntoActual)) {
 			return;
 		}
