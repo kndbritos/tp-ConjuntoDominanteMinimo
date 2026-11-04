@@ -26,6 +26,9 @@ public class SolverBacktracking {
 	}
 	
 	private void backtracking(int verticeActual, Set<Integer> conjuntoActual) {
+		if (Thread.currentThread().isInterrupted()) {
+		    return;
+		}
 		if(alcanzoTamanoMinimo(conjuntoActual)) {
 			return;
 		}
