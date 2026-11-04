@@ -33,8 +33,11 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
     private JButton botonAgregarArista;
     private JButton botonResolver;
     private JButton botonCargarGrafo;
+    private JButton botonBacktracking;
 
     private JTextArea areaResultados;
+    
+    private PanelGrafo panelGrafo;
 
     public VentanaPrincipal(Controlador controlador) {
 
@@ -45,6 +48,7 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
         configurarEventos();
 
         controlador.agregarObservador(this);
+        grafoActualizado();
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -84,6 +88,7 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
         botonAgregarArista = new JButton("Agregar arista");
         botonResolver = new JButton("Resolver goloso");
         botonCargarGrafo = new JButton("Cargar grafo XML");
+        botonBacktracking = new JButton ("Resolver Backtracking");
         
         panelControles.add(new JLabel("Cantidad de vértices:"));
         panelControles.add(campoVertices);
@@ -97,17 +102,25 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
         panelControles.add(botonCrearGrafo);
         panelControles.add(botonAgregarVertice);
 
-        areaResultados = new JTextArea();
+        panelGrafo = new PanelGrafo();
+        
+        areaResultados = new JTextArea(4, 30);
         areaResultados.setEditable(false);
 
+        JPanel panelCentral = new JPanel(new BorderLayout());
+
+        panelCentral.add(panelGrafo, BorderLayout.CENTER);
+        panelCentral.add(areaResultados, BorderLayout.SOUTH);
+
         add(panelControles, BorderLayout.NORTH);
-        add(areaResultados, BorderLayout.CENTER);
+        add(panelCentral, BorderLayout.CENTER);
 
         JPanel panelInferior = new JPanel();
 
         panelInferior.add(botonAgregarArista);
         panelInferior.add(botonCargarGrafo);
         panelInferior.add(botonResolver);
+        panelInferior.add(botonBacktracking);
 
         add(panelInferior, BorderLayout.SOUTH);
     }
@@ -149,7 +162,10 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
         botonResolver.addActionListener(e -> {
             try {
                 java.util.List<Integer> resultado = controlador.resolverGoloso();
-
+                panelGrafo.mostrarSolucion(
+                	    new java.util.HashSet<>(resultado)
+                	);
+                
                 areaResultados.setText(
                     "Conjunto dominante obtenido: " + resultado
                     + "\nCantidad de vértices seleccionados: " + resultado.size()
@@ -185,6 +201,22 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
                 }
             }
         });
+        botonBacktracking.addActionListener(e ->{
+        	try {
+                java.util.Set<Integer> resultado =
+                        controlador.resolverBacktracking();
+
+                panelGrafo.mostrarSolucion(resultado);
+                
+                areaResultados.setText(
+                    "Conjunto dominante mínimo: " + resultado
+                    + "\nCantidad de vértices seleccionados: " + resultado.size()
+                );
+
+            } catch (IllegalArgumentException ex) {
+                mostrarError(ex.getMessage());
+            }
+        });
     }
     
     private void mostrarError(String mensaje) {
@@ -195,8 +227,17 @@ public class VentanaPrincipal extends JFrame implements ObservadorGrafo {
     	        javax.swing.JOptionPane.ERROR_MESSAGE
     	    );
 	}
-	@Override
+    @Override
     public void grafoActualizado() {
+
+        java.util.List<java.util.Set<Integer>> adyacencias =
+                new java.util.ArrayList<>();
+
+        for (int i = 0; i < controlador.cantidadVertices(); i++) {
+            adyacencias.add(controlador.vecinosDe(i));
+        }
+
+        panelGrafo.actualizarGrafo(adyacencias);
 
         areaResultados.setText(
             "El grafo fue actualizado.\n" +

@@ -82,4 +82,7 @@ public class Controlador {
             observador.grafoActualizado();
         }
     }
+    public Set<Integer> vecinosDe(int vertice) {
+        return grafo.vecinos(vertice);
+    }
 }
