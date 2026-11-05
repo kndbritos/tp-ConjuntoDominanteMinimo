@@ -9,6 +9,7 @@ public class PruebaDeStress {
         this.generador = generador;
         this.observador = observador;
     }
+    
     public void ejecutar() {
         for (int n = 2; !Thread.currentThread().isInterrupted(); n++) {
             Grafo grafo = GeneradorDeGrafos.aleatorio(n, generador);
@@ -21,4 +22,5 @@ public class PruebaDeStress {
             }
         }
     }
+    
 }
