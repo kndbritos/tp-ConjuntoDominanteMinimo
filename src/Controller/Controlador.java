@@ -1,6 +1,7 @@
 package Controller;
 
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,9 @@ import Model.LectorXML;
 import Model.ObservadorGrafo;
 import Model.SolverBacktracking;
 import Model.SolverGolosoPorCobertura;
+import Model.GeneradorRandom;
+import Model.ObservadorStress;
+import Model.PruebaDeStress;
 
 public class Controlador {
     private Grafo grafo;
@@ -85,4 +89,17 @@ public class Controlador {
     public Set<Integer> vecinosDe(int vertice) {
         return grafo.vecinos(vertice);
     }
+
+    public void ejecutarStress(ObservadorStress observador) {
+	    if (observador == null) {
+	        throw new IllegalArgumentException(
+	            "El observador de stress no puede ser nulo"
+	        );
+	    }
+	
+	    PruebaDeStress prueba = new PruebaDeStress(new GeneradorRandom(), observador);
+	
+	    prueba.ejecutar();
+    }
+
 }
